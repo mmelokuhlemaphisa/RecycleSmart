@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block title %}Your Dashboard{% endblock %}
+
+{% block content %}
+    <h1>Welcome to Your Recycling Dashboard, {{ current_user.user_name }}</h1>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Points Earned</h5>
+                    <p class="card-text display-4">{{ total_points }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Your Recent Submissions (Status Tracker)</h5>
+                    {% if entries %}
+                        <ul class="list-group list-group-flush">
+                            {% for entry in entries %}
+                                <li class="list-group-item">
+                                    <strong>{{ entry.material_type.material_type_name }}:</strong> {{ entry.entry_weight }}kg
+                                    <span class="badge badge-{% if entry.entry_status == 'approved' %}success{% elif entry.entry_status == 'pending' %}warning{% else %}danger{% endif %}">
+                                        {{ entry.entry_status.capitalize() }}
+                                    </span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>No submissions yet. <a href="{{ url_for('submit') }}">Start recycling now!</a></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}       

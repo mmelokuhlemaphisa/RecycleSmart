@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% block title %}Admin Review{% endblock %}
+
+{% block content %}
+    {% if not current_user.is_admin() %}
+        <h1 class="text-danger">Access Denied</h1>
+        <p>You must be an administrator to view this page.</p>
+    {% else %}
+        <h1>Admin Review Queue (Pending Submissions)</h1>
+        <p>Total Pending: <strong>{{ entries|length }}</strong></p>
+
+        {% if not entries %}
+            <div class="alert alert-success">No submissions are currently pending review!</div>
+        {% endif %}
+
+        {% for entry in entries %}
+        <div class="card mb-3">
+            <div class="card-header">
+                Submission ID: {{ entry.entry_id }} by User: {{ entry.user.user_name }}
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">{{ entry.material_type.material_type_name }}</h5>
+                <p class="card-text">
+                    Weight: <strong>{{ entry.entry_weight }} kg</strong><br>
+                    Submitted On: {{ entry.entry_date.strftime('%Y-%m-%d %H:%M') }}<br>
+                    Description: {{ entry.description if entry.description else 'N/A' }}
+                </p>
+
+                {# Simple form to process approval/rejection #}
+                <form method="POST" action="{{ url_for('admin_review') }}" class="d-inline">
+                    <input type="hidden" name="entry_id" value="{{ entry.entry_id }}">
+                    <div class="form-group d-inline-block mr-2">
+                        {{ form.action(class="form-control form-control-sm d-inline-block w-auto") }}
+                    </div>
+                    {{ form.submit(class="btn btn-sm btn-success") }}
+                </form>
+
+            </div>
+        </div>
+        {% endfor %}
+
+    {% endif %}
+{% endblock %}

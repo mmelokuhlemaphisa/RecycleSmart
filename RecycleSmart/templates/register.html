@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block title %}Register{% endblock %}
+
+{% block content %}
+    <h1>Register for RecycleSmart</h1>
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.username.label(class="form-control-label") }}
+            {{ form.username(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.email.label(class="form-control-label") }}
+            {{ form.email(class="form-control") }}
+        </div>
+         <div class="form-group">
+            {{ form.role.label(class="form-control-label") }}
+            {{ form.role(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.password.label(class="form-control-label") }}
+            {{ form.password(class="form-control") }}
+        </div>
+        {{ form.submit(class="btn btn-primary") }}
+    </form>
+{% endblock %}

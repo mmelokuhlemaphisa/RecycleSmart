@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <title>{% block title %}RecycleSmart{% endblock %}</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{{ url_for('dashboard') }}">RecycleSmart</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+                {% if current_user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('submit') }}">Submit</a></li>
+                    {% if current_user.is_admin() %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_review') }}">Admin Review</a></li>
+                    {% endif %}
+                {% endif %}
+            </ul>
+            <ul class="navbar-nav">
+                {% if current_user.is_authenticated %}
+                    <li class="nav-item"><span class="nav-link">Logged in as: {{ current_user.user_name }} ({{ current_user.user_role }})</span></li>
+                    <li class="nav-item"><a class="nav-link btn btn-sm btn-outline-secondary" href="{{ url_for('logout') }}">Logout</a></li>
+                {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('register') }}">Register</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</body>
+</html>
