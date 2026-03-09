@@ -30,12 +30,15 @@ class User(db.Model, UserMixin):  # <-- UserMixin is present
     user_email = db.Column(db.String(120), unique=True, nullable=False)
     user_password = db.Column(db.String(150), nullable=False)
     user_role = db.Column(db.String(20), default='user', nullable=False)
-    user_join_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    recycling_entries = db.relationship('RecyclingEntry', backref='user', lazy=True)
+    user_join_date = db.Column(
+        db.DateTime, nullable=False, default=datetime.utcnow)
+    recycling_entries = db.relationship(
+        'RecyclingEntry', backref='user', lazy=True)
     point_ledgers = db.relationship('PointLedger', backref='user', lazy=True)
 
     def set_password(self, password):
-        self.user_password = bcrypt.generate_password_hash(password).decode('utf-8')
+        self.user_password = bcrypt.generate_password_hash(
+            password).decode('utf-8')
 
     def check_password(self, password):
         return bcrypt.check_password_hash(self.user_password, password)
@@ -52,28 +55,36 @@ class MaterialType(db.Model):
     material_type_id = db.Column(db.Integer, primary_key=True)
     material_type_name = db.Column(db.String(50), nullable=False, unique=True)
     points_per_kg = db.Column(db.Float, nullable=False)
-    recycling_entries = db.relationship('RecyclingEntry', backref='material_type', lazy=True)
+    recycling_entries = db.relationship(
+        'RecyclingEntry', backref='material_type', lazy=True)
 
 
 class RecyclingEntry(db.Model):
     __tablename__ = 'recycling_entry'
     entry_id = db.Column(db.Integer, primary_key=True)
     entry_weight = db.Column(db.Float, nullable=False)
-    entry_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    entry_date = db.Column(db.DateTime, nullable=False,
+                           default=datetime.utcnow)
     entry_status = db.Column(db.String(20), default='pending', nullable=False)
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
-    material_type_id = db.Column(db.Integer, db.ForeignKey('material_type.material_type_id'), nullable=False)
-    point_ledger_entry = db.relationship('PointLedger', backref='entry', uselist=False, lazy=True)
+    user_id = db.Column(db.Integer, db.ForeignKey(
+        'user.user_id'), nullable=False)
+    material_type_id = db.Column(db.Integer, db.ForeignKey(
+        'material_type.material_type_id'), nullable=False)
+    point_ledger_entry = db.relationship(
+        'PointLedger', backref='entry', uselist=False, lazy=True)
 
 
 class PointLedger(db.Model):
     __tablename__ = 'point_ledger'
     points_ledger_id = db.Column(db.Integer, primary_key=True)
     points_awarded = db.Column(db.Integer, nullable=False)
-    points_ledger_date_awarded = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
-    entry_id = db.Column(db.Integer, db.ForeignKey('recycling_entry.entry_id'), unique=True, nullable=False)
+    points_ledger_date_awarded = db.Column(
+        db.DateTime, nullable=False, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey(
+        'user.user_id'), nullable=False)
+    entry_id = db.Column(db.Integer, db.ForeignKey(
+        'recycling_entry.entry_id'), unique=True, nullable=False)
 
 
 # --- 3. FLASK-LOGIN & SHELL CONFIGURATION ---
@@ -108,7 +119,8 @@ def register():
             return render_template('register.html', title='Register', form=form)
         # *******************************************************
 
-        user = User(user_name=form.username.data, user_email=form.email.data, user_role=form.role.data)
+        user = User(user_name=form.username.data,
+                    user_email=form.email.data, user_role=form.role.data)
         user.set_password(form.password.data)
 
         # Initial check to ensure at least one admin exists for testing Phase 3
@@ -118,7 +130,8 @@ def register():
 
         db.session.add(user)
         db.session.commit()
-        flash(f'Account created for {form.username.data}! Please log in.', 'success')
+        flash(
+            f'Account created for {form.username.data}! Please log in.', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
@@ -140,9 +153,11 @@ def login():
             return redirect(next_page) if next_page else redirect(url_for('dashboard'))
 
         elif not user:
-            flash('Login Unsuccessful: **User not found**.', 'danger')  # Debug line 1
+            flash('Login Unsuccessful: **User not found**.',
+                  'danger')  # Debug line 1
         else:  # User exists, but password check failed
-            flash('Login Unsuccessful: **Incorrect Password**.', 'danger')  # Debug line 2
+            flash('Login Unsuccessful: **Incorrect Password**.',
+                  'danger')  # Debug line 2
 
     return render_template('login.html', title='Login', form=form)
 
@@ -179,7 +194,8 @@ def submit():
     material_choices = [(mt.material_type_id, f"{mt.material_type_name} ({mt.points_per_kg} pts/kg)")
                         for mt in MaterialType.query.all()]
 
-    form = RecyclingSubmitForm(material=material_choices[0][0] if material_choices else None)
+    form = RecyclingSubmitForm(
+        material=material_choices[0][0] if material_choices else None)
     form.material.choices = material_choices
 
     if form.validate_on_submit():
@@ -192,7 +208,8 @@ def submit():
         db.session.add(new_entry)
         db.session.commit()
 
-        flash('Recycling submission logged! Awaiting administrator verification.', 'success')
+        flash(
+            'Recycling submission logged! Awaiting administrator verification.', 'success')
         return redirect(url_for('dashboard'))
 
     return render_template('submit.html', title='Submit Recycling', form=form)
@@ -205,7 +222,8 @@ def admin_review():
         flash('You do not have permission to access this page.', 'danger')
         return redirect(url_for('dashboard'))
 
-    pending_entries = RecyclingEntry.query.filter_by(entry_status='pending').all()
+    pending_entries = RecyclingEntry.query.filter_by(
+        entry_status='pending').all()
     form = AdminApprovalForm()
 
     if request.method == 'POST':
@@ -250,13 +268,15 @@ if __name__ == '__main__':
 
         # Seed Initial Admin User (if not already there)
         if not User.query.filter_by(user_role='admin').first():
-            admin_user = User(user_name='Admin User', user_email='admin@dut.ac.za', user_role='admin')
+            admin_user = User(user_name='Admin User',
+                              user_email='admin@dut.ac.za', user_role='admin')
             admin_user.set_password('AdminPass123')
             db.session.add(admin_user)
             db.session.commit()
-            print("Initial Admin User created (Email: admin@dut.ac.za, Pass: AdminPass123)")
+            print(
+                "Initial Admin User created (Email: admin@dut.ac.za, Pass: AdminPass123)")
 
         print("---------------------------------------")
 
     # Start the server
-    app.run(debug=True)
+    app.run(debug=True, port=8081)
