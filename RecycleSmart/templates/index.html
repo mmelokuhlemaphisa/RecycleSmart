@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RecycleSmart | Track Your Impact</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="logo">
+        <i class="fas fa-recycle"></i> RecycleSmart
+    </div>
+
+    <div class="nav-auth">
+        <a href="{{ url_for('login') }}"><button class="btn-login">Login</button></a>
+        <a href="{{ url_for('register') }}"><button class="btn-signup">Sign Up</button></a>
+        <button class="btn-about">About</button>
+    </div>
+</nav>
+
+<main>
+
+<header class="hero">
+    <h1>Small Actions, <span class="highlight">Big Changes.</span></h1>
+
+    <p>
+        RecycleSmart helps you track your daily recycling habits,
+        earn points, gain rewards and reduce your carbon footprint.
+        Every bottle, paper, and plastic recycled counts toward a cleaner planet.
+    </p>
+
+    <div class="hero-image">
+        <i class="fas fa-earth-africa"></i>
+    </div>
+</header>
+
+<section class="info-section">
+
+    <div class="info-grid">
+
+        <div class="info-card">
+            <h4><i class="fas fa-lightbulb"></i> Save Energy</h4>
+            <p>Recycling one glass bottle saves enough energy to power a lightbulb for 4 hours!</p>
+        </div>
+
+        <div class="info-card">
+            <h4><i class="fas fa-tree"></i> Protect Nature</h4>
+            <p>Recycling paper saves trees and reduces water pollution by 35%.</p>
+        </div>
+
+        <div class="info-card">
+            <h4><i class="fas fa-award"></i> Earn Points</h4>
+            <p>Earn points for every item you recycle. The more you recycle, the more rewards you unlock!</p>
+        </div>
+
+        <div class="info-card">
+            <h4><i class="fas fa-leaf"></i> Reduce Carbon Footprint</h4>
+            <p>Every recycled item helps lower carbon emissions and keeps our planet cleaner for future generations.</p>
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+<footer>
+    <p>© 2026 RecycleSmart. All rights reserved | DUT Student Project.</p>
+</footer>
+
+</body>
+</html>
