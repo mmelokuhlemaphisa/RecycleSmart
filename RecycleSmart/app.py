@@ -10,6 +10,7 @@ from forms import RegistrationForm, LoginForm, RecyclingSubmitForm, AdminApprova
 # --- 1. INITIALIZATION & CONFIGURATION ---
 app = Flask(__name__)
 
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///recyclesmart.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'RecycleSmart_Group11_Dev_2026!'
